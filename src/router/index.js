@@ -90,6 +90,14 @@ const routes = [
         show: false, // 不在导航栏里面显示
         component: () => import(`@/views/admin/UpdatePassword.vue`),
         meta: { requireAuth: true }
+      },
+      {
+        path: "/pet-post-manage",
+        name: "宠物经验帖子管理",
+        show: true,
+        icon: "el-icon-s-help",
+        component: () => import(`@/views/admin/PetPostManage.vue`),
+        meta: { requireAuth: true }
       }
     ]
   },
