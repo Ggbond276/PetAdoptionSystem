@@ -19,6 +19,11 @@ const routes = [
     component: () => import(`@/views/view/Index.vue`)
   },
   {
+    path: "/pet-detail",
+    name: "petDetail",
+    component: () => import(`@/views/user/PetDetail.vue`)
+  },
+  {
     path: "/login",
     name: "login",
     component: () => import(`@/views/login/Login.vue`)
@@ -91,9 +96,9 @@ const routes = [
     },
     children: [
       {
-        path: "/home",
-        name: "首页",
-        component: () => import(`@/views/user/Home.vue`),
+        path: "/pet-list",
+        name: "宠物大厅",
+        component: () => import(`@/views/user/PetList.vue`),
         meta: { requireAuth: true }
       }
     ]

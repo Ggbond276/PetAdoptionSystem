@@ -1,16 +1,16 @@
 <template>
   <div class="logo-container">
-    <img 
-      src="/logo.png" 
-      alt="Logo" 
+    <img
+      src="/logo.png"
+      alt="Logo"
       class="logo-image"
       :style="{ width: logoSize + 'px', height: logoSize + 'px' }"
-    >
+    />
     <transition name="fade">
-      <span 
-        v-if="!collapsed" 
+      <span
+        v-if="!collapsed"
         class="logo-text"
-        :style="{ 
+        :style="{
           color: textColor,
           fontSize: fontSize + 'px',
           opacity: textOpacity
@@ -28,7 +28,7 @@ export default {
   props: {
     sysName: {
       type: String,
-      default: '一路旅友'
+      default: ""
     },
     collapsed: {
       type: Boolean,
@@ -36,7 +36,7 @@ export default {
     },
     textColor: {
       type: String,
-      default: 'rgb(51,51,51)'
+      default: "rgb(51,51,51)"
     },
     logoSize: {
       type: Number,
@@ -85,16 +85,18 @@ export default {
 .logo-text {
   margin-left: 8px;
   font-weight: 600;
-  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
   white-space: nowrap;
   transition: all 0.3s ease;
 }
 
 /* 过渡动画 */
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.3s ease;
 }
-.fade-enter, .fade-leave-to {
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
 }
 </style>
