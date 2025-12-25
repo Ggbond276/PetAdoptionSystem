@@ -51,6 +51,14 @@ const routes = [
         meta: { requireAuth: true }
       },
       {
+        path: "/pet-manage",
+        name: "宠物管理",
+        show: true,
+        icon: "el-icon-s-help",
+        component: () => import(`@/views/admin/PetManage.vue`),
+        meta: { requireAuth: true }
+      },
+      {
         path: "/pet-type-manage",
         name: "宠物类别管理",
         show: true,
