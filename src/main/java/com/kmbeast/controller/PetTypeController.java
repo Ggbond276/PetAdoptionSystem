@@ -31,7 +31,6 @@ public class PetTypeController {
     public Result<String> sava(@RequestBody PetType petType) {
         return petTypeService.save(petType);
     }
-
     /**
      * 更新宠物类型
      * @param petType 宠物类型
@@ -42,7 +41,6 @@ public class PetTypeController {
     public Result<String> update(@RequestBody PetType petType) {
         return petTypeService.update(petType);
     }
-
     /**
      * 删除宠物类型
      * @param id 宠物类型主键ID
@@ -53,7 +51,6 @@ public class PetTypeController {
     public Result<String> delete(@PathVariable Integer id) {
         return petTypeService.delete(id);
     }
-
      /**
       * 查询宠物类型
       * @param petTypeQueryDto 查询参数
