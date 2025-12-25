@@ -87,6 +87,14 @@ const routes = [
         meta: { requireAuth: true }
       },
       {
+        path: "/notice-manage",
+        name: "公告管理",
+        show: true,
+        icon: "el-icon-document",
+        component: () => import(`@/views/admin/NoticeManage.vue`),
+        meta: { requireAuth: true }
+      },
+      {
         path: "/evaluations-manage",
         name: "评论管理",
         show: true,
