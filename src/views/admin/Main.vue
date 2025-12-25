@@ -1,21 +1,15 @@
 <template>
-    <div class="text">
-        首页
-    </div>
+  <div class="text">
+    首页
+  </div>
 </template>
 <script>
 export default {
-    data() {
-        return {
-            
-        }
-    },
-    created() {
-
-    },
-    methods: {
-
-    }
+  data() {
+    return {};
+  },
+  created() {},
+  methods: {}
 };
 </script>
 <style scoped lang="scss"></style>

@@ -45,17 +45,26 @@
               </div>
             </span>
             <el-dropdown-menu slot="dropdown" class="user-dropdown">
+              <el-dropdown-item @click.native="center" icon="el-icon-s-data">
+                创作中心
+              </el-dropdown-item>
               <el-dropdown-item
                 @click.native="updateUserInfo"
                 icon="el-icon-user-solid"
               >
-                修改个人信息
+                修改信息
               </el-dropdown-item>
               <el-dropdown-item
                 @click.native="dialogPasswordOperation = true"
                 icon="el-icon-finished"
               >
                 修改密码
+              </el-dropdown-item>
+              <el-dropdown-item
+                @click.native="proposal"
+                icon="el-icon-connection"
+              >
+                意见反馈
               </el-dropdown-item>
               <el-dropdown-item
                 @click.native="dialogOutOperation = true"
@@ -267,7 +276,11 @@ export default {
       dialogPasswordOperation: false, // 修改密码弹窗开关
       dialogUserInfoVisible: false, // 修改信息弹窗开关
       dialogOutOperation: false, // 退出登录弹窗控制开关
-      navItems: [{ path: "/pet-list", icon: "", title: "宠物大厅" }],
+      navItems: [
+        { path: "/pet-list", icon: "", title: "宠物大厅" },
+        { path: "/pet-post", icon: "el-icon-s-help", title: "养宠经验" },
+        { path: "/pet-post-user", icon: "", title: "创作中心" }
+      ],
       userInfo: {},
       isAuthChecked: false,
       isMobileMenuOpen: false,
@@ -282,6 +295,14 @@ export default {
     }
   },
   methods: {
+    // 加载意见与反馈中心
+    proposal() {
+      this.$router.push("/proposal-feedback");
+    },
+    center() {
+      // 加载创作中心页面
+      this.$router.push("/pet-post-user");
+    },
     // 跳转至宠物经验帖子发布页
     goPetPost() {
       this.$router.push("/create-pet-post");

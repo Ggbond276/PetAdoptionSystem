@@ -24,9 +24,19 @@ const routes = [
     component: () => import(`@/views/user/PetDetail.vue`)
   },
   {
+    path: "/pet-post-detail",
+    name: "petPostDetail",
+    component: () => import(`@/views/user/PetPostDetail.vue`)
+  },
+  {
     path: "/create-pet-post",
     name: "createPetPost",
     component: () => import(`@/views/user/CreatePetPost.vue`)
+  },
+  {
+    path: "/update-pet-post",
+    name: "updatePetPost",
+    component: () => import(`@/views/user/UpdatePetPost.vue`)
   },
   {
     path: "/login",
@@ -112,6 +122,18 @@ const routes = [
         path: "/pet-list",
         name: "宠物大厅",
         component: () => import(`@/views/user/PetList.vue`),
+        meta: { requireAuth: true }
+      },
+      {
+        path: "/pet-post",
+        name: "养宠经验",
+        component: () => import(`@/views/user/PetPost.vue`),
+        meta: { requireAuth: true }
+      },
+      {
+        path: "/pet-post-user",
+        name: "创作中心",
+        component: () => import(`@/views/user/PetPostUser.vue`),
         meta: { requireAuth: true }
       }
     ]
