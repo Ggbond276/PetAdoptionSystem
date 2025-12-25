@@ -30,7 +30,7 @@ public class PetPostController {
      * @return
      */
     @ResponseBody
-    @PostMapping("/save")
+    @PostMapping(value ="/save")
     public Result<String> save(@RequestBody PetPost petPost) {
         return petPostService.saveEntity(petPost);
     }
@@ -41,7 +41,7 @@ public class PetPostController {
      * @return
      */
     @ResponseBody
-    @PutMapping("/update")
+    @PutMapping(value ="/update")
     public Result<String> update(@RequestBody PetPost petPost) {
         return petPostService.updateEntity(petPost);
     }
@@ -52,7 +52,7 @@ public class PetPostController {
      * @return
      */
     @ResponseBody
-    @DeleteMapping("/{id}")
+    @DeleteMapping(value ="/{id}")
     public Result<String> deleteById(@PathVariable Integer id) {
         petPostService.removeById(id);
         return ApiResult.success("删除成功");
@@ -93,5 +93,17 @@ public class PetPostController {
     @PostMapping(value = "/list")
     public Result<List<PetPostListItemVO>> list(@RequestBody PetPostQueryDto petPostQueryDto) {
         return petPostService.list(petPostQueryDto);
+    }
+
+    /**
+     * 宠物经验帖子审核
+     *
+     * @param id 主键ID
+     * @return Result<String> 通用返回封装类
+     */
+    @ResponseBody
+    @PutMapping(value = "/audit/{id}")
+    public Result<String> audit(@PathVariable Integer id) {
+        return petPostService.audit(id);
     }
 }

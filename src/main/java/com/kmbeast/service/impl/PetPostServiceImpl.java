@@ -75,6 +75,21 @@ public class PetPostServiceImpl extends ServiceImpl<PetPostMapper, PetPost> impl
     }
 
     /**
+     * 宠物经验帖子审核
+     *
+     * @param id 主键ID
+     * @return Result<String> 通用返回封装类
+     */
+    @Override
+    public Result<String> audit(Integer id) {
+        PetPost petPost = new PetPost();
+        petPost.setId(id);
+        petPost.setIsAudit(IsAuditEnum.AUDIT.getStatus());
+        updateById(petPost);
+        return ApiResult.success("审核成功");
+    }
+
+    /**
      * 宠物经验帖子参数校验
      * @param petPost
      */

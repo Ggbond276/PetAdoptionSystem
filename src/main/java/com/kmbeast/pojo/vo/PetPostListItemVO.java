@@ -1,14 +1,20 @@
 package com.kmbeast.pojo.vo;
 
-import com.kmbeast.pojo.entity.PetPost;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
+/**
+ * 宠物经验帖子列表VO项
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class PetPostListItemVO {
+
     private Integer id;
     /**
      * 用户ID，外键，关联的是用户表
@@ -50,4 +56,9 @@ public class PetPostListItemVO {
      * 是否已经审核（0：未审核；1：已审核）
      */
     private Boolean isAudit;
+    /**
+     * 发布时间
+     */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createTime;
 }

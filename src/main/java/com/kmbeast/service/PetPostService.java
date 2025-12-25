@@ -18,4 +18,6 @@ public interface PetPostService extends IService<PetPost> {
     Result<List<PetPostListItemVO>> list(PetPostQueryDto petPostQueryDto);
 
     Result<PetPostVO> getById(Integer id);
+
+    Result<String> audit(Integer id);
 }
