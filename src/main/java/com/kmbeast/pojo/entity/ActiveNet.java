@@ -1,9 +1,14 @@
 package com.kmbeast.pojo.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jsoup.select.Evaluator;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -11,10 +16,12 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@TableName(value = "active_net")
 public class ActiveNet {
     /**
      * 行为信息表主键ID
      */
+    @TableId(type = IdType.AUTO) // 主键自增
     private Integer id;
     /**
      * 用户ID,外键,关联用户表
