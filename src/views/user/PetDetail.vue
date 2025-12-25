@@ -23,6 +23,43 @@
     <!-- 宠物详情描述 -->
     <div class="pet-detail" v-html="petInfo.detail"></div>
 
+    <!-- 点赞及收藏区域 -->
+    <div class="operation-area">
+      <div class="box">
+        <!-- 收藏区域 -->
+        <div class="save" @click="saveOperation">
+          <div
+            style="display: flex;justify-content: center;align-items: center;"
+          >
+            <i
+              :style="{
+                color: saveStatus ? 'rgb(216, 30, 6)' : 'rgb(0, 0, 0)'
+              }"
+              class="el-icon-star-on"
+            ></i>
+          </div>
+          <div class="text">
+            {{ saveStatus ? "取消收藏" : "收藏" }}
+          </div>
+        </div>
+        <!-- 点赞区域 -->
+        <div class="like" @click="upvoteOperation">
+          <div
+            style="display: flex;justify-content: center;align-items: center;"
+          >
+            <img
+              :src="upvoteStatus ? '/update-default.png' : '/update-active.png'"
+              alt=""
+              srcset=""
+            />
+          </div>
+          <div class="text">
+            {{ upvoteStatus ? "取消点赞" : "点赞" }}
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- 领养信息 -->
     <div class="adopt-info">
       <div class="address">
@@ -65,7 +102,11 @@ export default {
     return {
       petInfo: {},
       queryDto: {},
-      userInfo: {}
+      userInfo: {},
+      saveActiveNetId: null,
+      upvoteActiveNetId: null,
+      saveStatus: false, // 收藏状态，初始值false，表示未收藏
+      upvoteStatus: false // 点赞状态，初始值false，表示未点赞
     };
   },
   filters: {
@@ -77,8 +118,149 @@ export default {
     this.queryDto = this.$router.currentRoute.query;
     this.fetchPetInfo(this.queryDto.id);
     this.userInfo = getUserInfo();
+
+    this.fetchSaveStatus();
+    this.fetchUpvoteStatus();
   },
   methods: {
+    // 查询用户与宠物信息的点赞关系
+    async fetchUpvoteStatus() {
+      try {
+        const activeNetQueryDto = {
+          contentId: this.queryDto.id,
+          contentType: "PET",
+          type: 2 // 行为类型，2是点赞
+        };
+        const { data } = await this.$axios.post(
+          "/active-net/queryUser",
+          activeNetQueryDto
+        );
+        this.upvoteStatus = data.length != 0;
+        if (data.length != 0) {
+          this.upvoteActiveNetId = data[0].id;
+        }
+      } catch (error) {
+        console.log("查询宠物点赞信息异常：", error);
+      }
+    },
+    // 查询用户与宠物信息的收藏关系
+    async fetchSaveStatus() {
+      try {
+        const activeNetQueryDto = {
+          contentId: this.queryDto.id,
+          contentType: "PET",
+          type: 3 // 行为类型，3是收藏
+        };
+        const { data } = await this.$axios.post(
+          "/active-net/queryUser",
+          activeNetQueryDto
+        );
+        this.saveStatus = data.length != 0;
+        if (data.length != 0) {
+          this.saveActiveNetId = data[0].id;
+        }
+      } catch (error) {
+        console.log("查询宠物收藏信息异常：", error);
+      }
+    },
+    // 点赞处理方法
+    upvoteOperation() {
+      if (!this.upvoteStatus) {
+        // 新增用户与宠物信息之间的点赞关系建立 - 新增
+        const activeNet = {
+          contentId: this.queryDto.id,
+          contentType: "PET",
+          type: 2
+        };
+        this.$axios
+          .post("/active-net/save", activeNet)
+          .then(response => {
+            if (response.code === 200) {
+              this.fetchUpvoteStatus();
+              this.$notify({
+                duration: 1000,
+                title: "点赞操作",
+                message: "点赞成功",
+                type: "success"
+              });
+            }
+          })
+          .catch(error => {
+            console.log("用户与宠物信息之间的点赞关系建立异常：", error);
+          });
+      } else {
+        if (this.upvoteActiveNetId === null) {
+          console.log("点赞行为互动类型Id为null");
+          return;
+        }
+        // 删除用户与宠物信息之间建立的收藏关系 - 删除
+        this.$axios
+          .delete(`/active-net/${this.upvoteActiveNetId}`)
+          .then(response => {
+            if (response.code === 200) {
+              this.fetchUpvoteStatus();
+              this.$notify({
+                duration: 1000,
+                title: "点赞操作",
+                message: "取消点赞成功",
+                type: "success"
+              });
+            }
+          })
+          .catch(error => {
+            console.log("用户与宠物信息之间的点赞关系删除异常：", error);
+          });
+      }
+    },
+    // 收藏处理方法
+    saveOperation() {
+      if (!this.saveStatus) {
+        // 新增用户与宠物信息之间的收藏关系建立 - 新增
+        const activeNet = {
+          contentId: this.queryDto.id,
+          contentType: "PET",
+          type: 3
+        };
+        this.$axios
+          .post("/active-net/save", activeNet)
+          .then(response => {
+            if (response.code === 200) {
+              this.fetchSaveStatus();
+              this.$notify({
+                duration: 1000,
+                title: "收藏操作",
+                message: "收藏成功",
+                type: "success"
+              });
+            }
+          })
+          .catch(error => {
+            console.log("用户与宠物信息之间的收藏关系建立异常：", error);
+          });
+      } else {
+        if (this.saveActiveNetId === null) {
+          console.log("收藏行为互动类型Id为null");
+          return;
+        }
+        // 删除用户与宠物信息之间建立的收藏关系 - 删除
+        this.$axios
+          .delete(`/active-net/${this.saveActiveNetId}`)
+          .then(response => {
+            if (response.code === 200) {
+              this.fetchSaveStatus();
+              this.$notify({
+                duration: 1000,
+                title: "收藏操作",
+                message: "取消收藏成功",
+                type: "success"
+              });
+            }
+          })
+          .catch(error => {
+            console.log("用户与宠物信息之间的收藏关系删除异常：", error);
+          });
+      }
+    },
     // 查询宠物信息
     async fetchPetInfo(id) {
       try {
@@ -106,7 +288,80 @@ export default {
 };
 </script>
 
-<style scoped>
+<style land="scss" scoped>
+.operation-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .box {
+    display: flex;
+    gap: 20px;
+
+    .text {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgb(81, 91, 101);
+    }
+
+    .like {
+      padding: 20px;
+      border-radius: 5px;
+      cursor: pointer;
+
+      img {
+        width: 25px;
+        height: 25px;
+      }
+
+      &:hover {
+        background-color: rgb(230, 248, 248);
+      }
+    }
+
+    .save {
+      padding: 20px;
+      border-radius: 5px;
+      cursor: pointer;
+
+      i {
+        font-size: 25px;
+      }
+
+      &:hover {
+        background-color: rgb(230, 248, 248);
+      }
+    }
+  }
+}
+
+.active-net {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+
+    .icon {
+      display: flex;
+      justify-content: center;
+    }
+
+    img {
+      width: 22px;
+      height: 22px;
+    }
+
+    i {
+      font-size: 22px;
+    }
+  }
+}
+
 .pet-detail-container {
   max-width: 800px;
   margin: 0 auto;
@@ -178,8 +433,8 @@ export default {
   margin-top: 30px;
   padding-top: 15px;
   padding-bottom: 15px;
-  border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
+  background-color: rgb(230, 248, 248);
+  padding-inline: 20px;
 }
 
 .address {
