@@ -6,8 +6,8 @@
         <div class="main-nav">
           <Logo
             class="logo"
-            logoSize="20"
-            fontSize="18"
+            :logoSize="20"
+            :fontSize="18"
             textColor="rgb(51,51,51)"
             sysName="宠物领养系统"
           />
@@ -24,6 +24,11 @@
             <i style="margin-right: 6px;" :class="item.icon"></i>
             {{ item.title }}
           </router-link>
+          <!-- 发布宠物经验帖子按钮 -->
+          <div @click="goPetPost" class="publish-pet-post">
+            <i class="el-icon-document"></i>
+            分享经验
+          </div>
           <el-dropdown trigger="click">
             <span class="user-dropdown-trigger">
               <div class="user-info">
@@ -277,6 +282,10 @@ export default {
     }
   },
   methods: {
+    // 跳转至宠物经验帖子发布页
+    goPetPost() {
+      this.$router.push("/create-pet-post");
+    },
     // 性别选择切换
     handleGenderChange(obj) {
       this.apiParam.gender = Number(obj.value);
@@ -417,6 +426,19 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.publish-pet-post {
+  background-color: rgb(26, 147, 62);
+  color: rgb(255, 255, 255);
+  padding: 4px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgb(26, 134, 58);
+  }
+}
+
 .app-container {
   display: flex;
   flex-direction: column;

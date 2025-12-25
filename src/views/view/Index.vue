@@ -95,7 +95,7 @@ export default {
     },
 
     goLogin() {
-      window.open("/login", "_blank");
+      this.$router.push("/login");
     },
 
     // 查询宠物信息

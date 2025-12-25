@@ -32,7 +32,10 @@
             @click="viewPetDetail(pet.id)"
           >
             <div class="pet-cover">
-              <img src="@/assets/image/pet-cover.jpg" :alt="pet.name" />
+              <img
+                :src="require('@/assets/image/pet-cover.jpg')"
+                :alt="pet.name"
+              />
               <div v-if="pet.isAdopt" class="adopted-tag">已领养</div>
               <div v-if="pet.isRecommend" class="recommend-tag">推荐</div>
             </div>
@@ -99,7 +102,10 @@ export default {
       }
     },
     viewPetDetail(id) {
-      window.open(`pet-detail?id=${id}`, "_blank");
+      this.$router.push({
+        path: "/pet-detail",
+        query: { id }
+      });
     }
   }
 };

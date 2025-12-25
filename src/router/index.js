@@ -24,6 +24,11 @@ const routes = [
     component: () => import(`@/views/user/PetDetail.vue`)
   },
   {
+    path: "/create-pet-post",
+    name: "createPetPost",
+    component: () => import(`@/views/user/CreatePetPost.vue`)
+  },
+  {
     path: "/login",
     name: "login",
     component: () => import(`@/views/login/Login.vue`)
