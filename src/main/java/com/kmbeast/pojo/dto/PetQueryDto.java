@@ -1,7 +1,9 @@
 package com.kmbeast.pojo.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class PetQueryDto extends QueryDto {
     private String name; // 宠物名称

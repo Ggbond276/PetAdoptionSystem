@@ -21,6 +21,16 @@ spring:
 mybatis:
   mapper-locations: classpath:mapper/*.xml
 
+# Mybatis-Plus 配置
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 开启日志
+    map-underscore-to-camel-case: true # 开启驼峰命名
+  global-config:
+    db-config:
+     id-type: auto # 主键策略
+  mapper-locations: classpath*:/mapper/**/*.xml # mapper文件位置
+
 
 
 
