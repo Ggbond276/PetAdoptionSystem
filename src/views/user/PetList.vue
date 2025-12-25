@@ -32,7 +32,7 @@
             @click="viewPetDetail(pet.id)"
           >
             <div class="pet-cover">
-              <img :src="pet.cover" :alt="pet.name" />
+              <img src="@/assets/image/pet-cover.jpg" :alt="pet.name" />
               <div v-if="pet.isAdopt" class="adopted-tag">已领养</div>
               <div v-if="pet.isRecommend" class="recommend-tag">推荐</div>
             </div>
