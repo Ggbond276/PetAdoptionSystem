@@ -1,6 +1,5 @@
 <template>
   <div class="login-container">
-
     <!-- 登录面板 -->
     <div class="login-panel animated fadeIn">
       <!-- 左侧图片区域 -->
@@ -19,26 +18,46 @@
           </div>
 
           <div key="account" class="input-group">
-            <input v-model="account" class="login-input" placeholder="输入账号" @focus="animateInput('account')"
-              @blur="resetInput('account')" />
+            <input
+              v-model="account"
+              class="login-input"
+              placeholder="输入账号"
+              @focus="animateInput('account')"
+              @blur="resetInput('account')"
+            />
             <span class="input-highlight"></span>
           </div>
 
           <div key="password" class="input-group">
-            <input v-model="password" class="login-input" type="password" placeholder="输入密码"
-              @focus="animateInput('password')" @blur="resetInput('password')" />
+            <input
+              v-model="password"
+              class="login-input"
+              type="password"
+              placeholder="输入密码"
+              @focus="animateInput('password')"
+              @blur="resetInput('password')"
+            />
             <span class="input-highlight"></span>
           </div>
 
           <div key="button" class="button-group">
-            <button class="login-btn" @click="login" @mouseenter="hoverButton(true)" @mouseleave="hoverButton(false)">
+            <button
+              class="login-btn"
+              @click="login"
+              @mouseenter="hoverButton(true)"
+              @mouseleave="hoverButton(false)"
+            >
               <span class="btn-text">立即登录</span>
               <span class="btn-icon">→</span>
             </button>
           </div>
 
           <div key="footer" class="login-footer">
-            <p>没有账号？<span class="register-link" @click="toDoRegister">点此注册</span></p>
+            <p>
+              没有账号？<span class="register-link" @click="toDoRegister"
+                >点此注册</span
+              >
+            </p>
           </div>
         </transition-group>
       </div>
@@ -54,23 +73,22 @@
 </template>
 
 <script>
-// 登录页面 - B站「程序员辰星」原创出品
 import { setToken, setRole } from "@/utils/storage.js";
 
 export default {
   name: "Login",
   data() {
     return {
-      account: '',
-      password: '',
+      account: "",
+      password: "",
       activeInput: null,
       isButtonHovered: false
-    }
+    };
   },
   methods: {
     // 跳转注册页面
     toDoRegister() {
-      this.$router.push('/register');
+      this.$router.push("/register");
     },
 
     // 输入框动画
@@ -89,7 +107,7 @@ export default {
 
     async login() {
       if (!this.account || !this.password) {
-        this.$message.info('账号与密码不能为空哦');
+        this.$message.info("账号与密码不能为空哦");
         return;
       }
 
@@ -98,31 +116,33 @@ export default {
       // 构建登录入参 UserLoginDto
       const userLoginDto = { account: this.account, password: bcryptPassword };
       try {
-        const { data, message } = await this.$axios.post(`user/login`, userLoginDto);
+        const { data } = await this.$axios.post(`user/login`, userLoginDto);
         setToken(data.token); // 将 token 存储至 LocalStorage 里面
         setRole(data.role); // 将用户角色存储至 LocalStorage 里面
         // 通过用户角色跳转指定的功能页
-        if (data.role === 1) { // 角色为 1，其是管理员 ，跳转管理员页面
-          this.$router.push('/admin');
-        } else if (data.role === 2) { // 角色为 2，其是用户 ，跳转管理员页面
-          this.$router.push('/user');
+        if (data.role === 1) {
+          // 角色为 1，其是管理员 ，跳转管理员页面
+          this.$router.push("/admin");
+        } else if (data.role === 2) {
+          // 角色为 2，其是用户 ，跳转管理员页面
+          this.$router.push("/user");
         } // ... 如果需要拓展其他角色，在这里控制就可
       } catch (error) {
-        console.error('登录异常:', error);
+        console.error("登录异常:", error);
         this.$message.error(error.message);
       }
-    },
+    }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
 
 * {
   user-select: none;
   box-sizing: border-box;
-  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  font-family: "Poppins", "Segoe UI", sans-serif;
 }
 
 .login-container {
@@ -300,13 +320,18 @@ export default {
           }
 
           &::before {
-            content: '';
+            content: "";
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            background: linear-gradient(
+              90deg,
+              transparent,
+              rgba(255, 255, 255, 0.2),
+              transparent
+            );
             transition: all 0.5s ease;
           }
 
@@ -352,7 +377,11 @@ export default {
     .circle {
       position: absolute;
       border-radius: 50%;
-      background: linear-gradient(135deg, rgba(106, 90, 205, 0.1) 0%, rgba(137, 207, 240, 0.1) 100%);
+      background: linear-gradient(
+        135deg,
+        rgba(106, 90, 205, 0.1) 0%,
+        rgba(137, 207, 240, 0.1) 100%
+      );
 
       &.circle-1 {
         width: 300px;
@@ -383,7 +412,6 @@ export default {
 
 /* 动画定义 */
 @keyframes float {
-
   0%,
   100% {
     transform: translateY(0);
@@ -395,7 +423,6 @@ export default {
 }
 
 @keyframes pulse {
-
   0%,
   100% {
     transform: scale(1);

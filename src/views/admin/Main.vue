@@ -26,7 +26,7 @@
       </div>
     </div>
     <div class="right">
-      <div v-for="(item, index) in petList" :key="index">
+      <!-- <div v-for="(item, index) in petList" :key="index">
         <div>
           <img style="width: 100%;" :src="item.cover" alt="" />
         </div>
@@ -36,7 +36,7 @@
         >
           {{ item.name }}
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>

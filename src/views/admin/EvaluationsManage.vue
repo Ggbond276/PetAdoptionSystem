@@ -1,8 +1,7 @@
 <template>
   <div class="container">
     <div class="top-healder">
-      <div class="nav-left">
-      </div>
+      <div class="nav-left"></div>
       <div class="nav-right">
         <div>
           <AutoInput placeholder="搜索评论" @listener="listener" />
@@ -26,14 +25,34 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="contentType" :sortable="true" width="128" label="所属模块"></el-table-column>
-        <el-table-column prop="upvoteCount" :sortable="true" width="128" label="点赞量"></el-table-column>
-        <el-table-column prop="parentId" :sortable="true" width="108" label="层级">
+        <el-table-column
+          prop="contentType"
+          :sortable="true"
+          width="128"
+          label="所属模块"
+        ></el-table-column>
+        <el-table-column
+          prop="upvoteCount"
+          :sortable="true"
+          width="128"
+          label="点赞量"
+        ></el-table-column>
+        <el-table-column
+          prop="parentId"
+          :sortable="true"
+          width="108"
+          label="层级"
+        >
           <template #default="scope">
-            <div>{{ scope.row.parentId === null ? '父级' : '子级' }}</div>
+            <div>{{ scope.row.parentId === null ? "父级" : "子级" }}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="createTime" :sortable="true" width="168" label="评论时间"></el-table-column>
+        <el-table-column
+          prop="createTime"
+          :sortable="true"
+          width="168"
+          label="评论时间"
+        ></el-table-column>
         <el-table-column label="" align="center">
           <template #default="scope">
             <div class="operate-buttons">
@@ -42,8 +61,11 @@
                   <i class="el-icon-more"></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native="handleDelete(scope.row)"
-                    icon="el-icon-delete">删除评论</el-dropdown-item>
+                  <el-dropdown-item
+                    @click.native="handleDelete(scope.row)"
+                    icon="el-icon-delete"
+                    >删除评论</el-dropdown-item
+                  >
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -52,40 +74,56 @@
       </el-table>
       <!-- 分页组件区域 -->
       <div class="pager">
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-          :current-page="evaluationQueryDto.current" :page-sizes="[10, 20]" :page-size="evaluationQueryDto.size"
-          layout="total, sizes, prev, pager, next, jumper" :total="apiResult.total"></el-pagination>
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="evaluationQueryDto.current"
+          :page-sizes="[10, 20]"
+          :page-size="evaluationQueryDto.size"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="apiResult.total"
+        ></el-pagination>
       </div>
     </div>
 
     <!-- 删除确认弹窗 -->
-    <el-dialog title="删除评论" :show-close="false" :visible.sync="dialogDeletedVisible" width="20%">
+    <el-dialog
+      title="删除评论"
+      :show-close="false"
+      :visible.sync="dialogDeletedVisible"
+      width="20%"
+    >
       <span>确定删除评论数据？</span>
       <span slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="dialogDeletedVisible = false">取消</el-button>
-        <el-button size="mini" type="primary" @click="confirmDeleted">确定</el-button>
+        <el-button size="mini" @click="dialogDeletedVisible = false"
+          >取消</el-button
+        >
+        <el-button size="mini" type="primary" @click="confirmDeleted"
+          >确定</el-button
+        >
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-// B站 「程序辰星」原创出品
 import AutoInput from "@/components/AutoInput.vue"; // 自己封装好的输入框组件
 export default {
   components: { AutoInput }, // 注册组件
   data() {
     return {
       id: null, // 页面即将删除的数据ID
-      apiResult: { // 后端返回的查询数据的响应数据
+      apiResult: {
+        // 后端返回的查询数据的响应数据
         data: [], // 数据项
-        total: 0, // 符合条件的数据总想 - 初始赋值为0
+        total: 0 // 符合条件的数据总想 - 初始赋值为0
       },
-      evaluationQueryDto: { // 搜索条件
+      evaluationQueryDto: {
+        // 搜索条件
         current: 1, // 当前页 - 初始是第一页
-        size: 10, // 页面显示大小 - 初始是10条
+        size: 10 // 页面显示大小 - 初始是10条
       },
-      dialogDeletedVisible: false, // 删除弹窗控制开关变量 - 初始是关（false）
+      dialogDeletedVisible: false // 删除弹窗控制开关变量 - 初始是关（false）
     };
   },
   created() {
@@ -100,11 +138,14 @@ export default {
     // 查询评论数据
     async fetchFreshData() {
       try {
-        const { data, total } = await this.$axios.post('/evaluations/query', this.evaluationQueryDto);
+        const { data, total } = await this.$axios.post(
+          "/evaluations/query",
+          this.evaluationQueryDto
+        );
         this.apiResult.data = data;
         this.apiResult.total = total;
       } catch (error) {
-        console.error('查询评论信息异常:', error);
+        console.error("查询评论信息异常:", error);
       }
     },
     // 分页 - 处理页面页数切换
@@ -129,10 +170,10 @@ export default {
         const { code } = await this.$axios.delete(`/evaluations/${this.id}`);
         if (code === 200) {
           this.$notify.success({
-            title: '评论删除',
-            message: '删除成功',
-            position: 'buttom-right',
-            suration: 1000,
+            title: "评论删除",
+            message: "删除成功",
+            position: "buttom-right",
+            suration: 1000
           });
           this.dialogDeletedVisible = false; // 关闭删除确认弹窗
           this.id = null; // 将标识ID置位
@@ -142,7 +183,7 @@ export default {
         console.log("删除评论数据异常：", error);
       }
     }
-  },
+  }
 };
 </script>
 <style scoped lang="scss">
@@ -160,13 +201,12 @@ export default {
   i {
     padding: 8px;
     border-radius: 6px;
-    transition: all .5s ease;
+    transition: all 0.5s ease;
 
     &:hover {
       background-color: rgb(236, 237, 238);
     }
   }
-
 }
 
 /* 行悬停时显示操作按钮 */
@@ -197,6 +237,5 @@ export default {
   .nav-left {
     display: flex;
   }
-
 }
 </style>
