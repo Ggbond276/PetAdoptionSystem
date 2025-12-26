@@ -12,15 +12,21 @@ import com.kmbeast.pojo.em.ActiveNetType;
 import com.kmbeast.pojo.em.IsAuditEnum;
 import com.kmbeast.pojo.entity.ActiveNet;
 import com.kmbeast.pojo.entity.PetPost;
+import com.kmbeast.pojo.vo.PetListItemVO;
 import com.kmbeast.pojo.vo.PetPostListItemVO;
 import com.kmbeast.pojo.vo.PetPostVO;
+import com.kmbeast.pojo.vo.ScoreVO;
 import com.kmbeast.service.PetPostService;
 import com.kmbeast.utils.AssertUtils;
+import com.kmbeast.utils.UserBasedCFUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 宠物经验帖子业务逻辑接口实现类
@@ -123,5 +129,46 @@ public class PetPostServiceImpl extends ServiceImpl<PetPostMapper, PetPost> impl
         petPost.setIsAudit(IsAuditEnum.AUDIT.getStatus());
         updateById(petPost);
         return ApiResult.success("审核成功");
+    }
+
+    /**
+     * 智能推荐宠物经验帖子信息
+     * @param count 期望拿到的条数
+     * @return Result<List < PetPostListItemVO>> 通用返回封装类
+     */
+    @Override
+    public Result<List<PetPostListItemVO>> autoRecommend(Integer count) {
+        List<Integer> petPostIds = this.baseMapper.queryAllIds(); // 获取全部的宠物经验ID列表
+        // 兴趣评分 = 浏览 * 1 + 收藏 * 3 + 喜欢 * 1
+        List<ScoreVO> scoreVOS = activeNetMapper.queryScore("PET-POST");
+        // 期望用到的评分数据集
+        List<UserBasedCFUtil.Score> scoreList = scoreVOS.stream().map(scoreVO -> new UserBasedCFUtil.Score(
+                scoreVO.getUserId(),
+                scoreVO.getContentId(),
+                scoreVO.getScore()
+        )).collect(Collectors.toList());
+        // 构建用户对于物品评分的矩阵
+        Map<Integer, Map<Integer, Double>> userItemMatrix = UserBasedCFUtil.buildUserItemMatrix(petPostIds, scoreList);
+        UserBasedCFUtil userBasedCFUtil = new UserBasedCFUtil(userItemMatrix);
+        List<Integer> recommendItems = userBasedCFUtil.recommendItems(LocalThreadHolder.getUserId(), count);
+        System.out.println("为用户「" + LocalThreadHolder.getUserId() + "」推荐的宠物经验帖子ID列表: " + recommendItems);
+        // “冷启动”
+        if (recommendItems.isEmpty()) {
+            List<ScoreVO> scoreVOList = activeNetMapper.queryAllIds(
+                    "PET-POST",
+                    ActiveNetType.VIEW.getStatus(),
+                    count
+            );
+            if (scoreVOList.isEmpty()) {
+                return ApiResult.success(new ArrayList<>());
+            }
+            List<Integer> petNetIds = scoreVOList.stream()
+                    .map(ScoreVO::getContentId)
+                    .collect(Collectors.toList());
+            List<PetPostListItemVO> petListItemVOS = this.baseMapper.queryListItemByIds(petNetIds);
+            return ApiResult.success(petListItemVOS);
+        }
+        List<PetPostListItemVO> petListItemVOS = this.baseMapper.queryListItemByIds(recommendItems);
+        return ApiResult.success(petListItemVOS);
     }
 }
