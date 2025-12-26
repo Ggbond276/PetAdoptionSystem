@@ -1,5 +1,8 @@
 package com.kmbeast.pojo.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,24 +10,30 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * 意见与反馈信息表，与数据库proposal_feedback表对应
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@TableName(value = "proposal_feedback") // 标识对应的数据库表
 public class ProposalFeedback {
+
     /**
-     * 用户与反馈表主键ID
+     * 意见与反馈信息表主键ID
      */
+    @TableId(type = IdType.AUTO)
     private Integer id;
     /**
-     * 用户ID,外键,关联用户表
+     * 用户ID，外键，关联的是用户表
      */
-    private Integer user_Id;
+    private Integer userId;
     /**
-     * 反馈或建议内容
+     * 描述
      */
     private String detail;
     /**
-     * 是否回复(0: 未回复; 1: 已回复)
+     * 是否已经回复（0：未回复；1：已回复）
      */
     private Boolean isReply;
     /**
@@ -32,9 +41,9 @@ public class ProposalFeedback {
      */
     private String replyContent;
     /**
-     * 是否是精华帖(0: 不是; 1: 是)
+     * 是否是精华帖（0：非精华贴；1：是精华帖）
      */
-    private Boolean top;
+    private Boolean isTop;
     /**
      * 创建时间
      */
@@ -44,5 +53,6 @@ public class ProposalFeedback {
      * 回复时间
      */
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime replayTime;
+    private LocalDateTime replyTime;
+
 }
