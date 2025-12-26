@@ -2,10 +2,8 @@ package com.kmbeast.mapper;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.kmbeast.pojo.dto.NoticeQueryDto;
-import com.kmbeast.pojo.dto.ProposalFeedBackQueryDto;
+import com.kmbeast.pojo.dto.ProposalFeedbackQueryDto;
 import com.kmbeast.pojo.entity.ProposalFeedback;
-import com.kmbeast.pojo.vo.NoticeListItemVO;
 import com.kmbeast.pojo.vo.ProposalFeedbackVO;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -18,12 +16,12 @@ public interface ProposalFeedbackMapper extends BaseMapper<ProposalFeedback> {
      * @param proposalFeedBackQueryDto
      * @return
      */
-    List<ProposalFeedbackVO> list(ProposalFeedBackQueryDto proposalFeedBackQueryDto);
+    List<ProposalFeedbackVO> list(ProposalFeedbackQueryDto proposalFeedBackQueryDto);
 
     /**
      * 意见与反馈查询总数
      * @param proposalFeedBackQueryDto
      * @return
      */
-    Integer listCount(ProposalFeedBackQueryDto proposalFeedBackQueryDto);
+    Integer listCount(ProposalFeedbackQueryDto proposalFeedBackQueryDto);
 }

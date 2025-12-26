@@ -1,21 +1,23 @@
-package com.kmbeast.service;
+package com.kmbeast.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kmbeast.context.LocalThreadHolder;
 import com.kmbeast.mapper.ProposalFeedbackMapper;
 import com.kmbeast.pojo.api.ApiResult;
 import com.kmbeast.pojo.api.Result;
-import com.kmbeast.pojo.dto.ProposalFeedBackQueryDto;
+import com.kmbeast.pojo.dto.ProposalFeedbackQueryDto;
 import com.kmbeast.pojo.em.IsReplyEnum;
 import com.kmbeast.pojo.em.IsTopEnum;
 import com.kmbeast.pojo.entity.ProposalFeedback;
 import com.kmbeast.pojo.vo.ProposalFeedbackVO;
+import com.kmbeast.service.ProposalFeedbackService;
 import com.kmbeast.utils.AssertUtils;
+import org.springframework.stereotype.Service;
 
-import javax.xml.ws.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Service
 public class ProposalFeedbackServiceImpl extends ServiceImpl<ProposalFeedbackMapper, ProposalFeedback> implements ProposalFeedbackService {
     /**
      * 意见与反馈新增
@@ -52,7 +54,7 @@ public class ProposalFeedbackServiceImpl extends ServiceImpl<ProposalFeedbackMap
      * @return
      */
     @Override
-    public Result<List<ProposalFeedbackVO>> query(ProposalFeedBackQueryDto proposalFeedBackQueryDto) {
+    public Result<List<ProposalFeedbackVO>> query(ProposalFeedbackQueryDto proposalFeedBackQueryDto) {
           List<ProposalFeedbackVO> proposalFeedbackVOS = this.baseMapper.list(proposalFeedBackQueryDto);
           Integer count = this.baseMapper.listCount(proposalFeedBackQueryDto);
           return ApiResult.success(proposalFeedbackVOS, count);

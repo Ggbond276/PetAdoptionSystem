@@ -2,7 +2,7 @@ package com.kmbeast.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.kmbeast.pojo.api.Result;
-import com.kmbeast.pojo.dto.ProposalFeedBackQueryDto;
+import com.kmbeast.pojo.dto.ProposalFeedbackQueryDto;
 import com.kmbeast.pojo.entity.ProposalFeedback;
 import com.kmbeast.pojo.vo.ProposalFeedbackVO;
 
@@ -13,6 +13,6 @@ public interface ProposalFeedbackService extends IService<ProposalFeedback> {
 
     Result<String> update(ProposalFeedback proposalFeedback);
 
-    Result<List<ProposalFeedbackVO>> query(ProposalFeedBackQueryDto proposalFeedBackQueryDto);
+    Result<List<ProposalFeedbackVO>> query(ProposalFeedbackQueryDto proposalFeedBackQueryDto);
 }
 
