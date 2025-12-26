@@ -7,6 +7,7 @@ import com.kmbeast.pojo.vo.ScoreVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -50,5 +51,7 @@ public interface ActiveNetMapper extends BaseMapper<ActiveNet> {
      * @return List<ScoreVO>
      */
     List<ScoreVO> queryScore(@Param(value = "contentType") String contentType);
+
+    List<ActiveNet> listChart(ActiveNetQueryDto activeNetQueryDto);
 
 }

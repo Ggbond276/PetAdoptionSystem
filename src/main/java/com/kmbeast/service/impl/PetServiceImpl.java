@@ -172,7 +172,6 @@ public class PetServiceImpl implements PetService {
      *
      * @param count 期望拿到的条数
      * @return Result<List < PetListItemVO>> 通用返回封装类
-     * @author B站「程序员辰星」原创出品
      */
     @Override
     public Result<List<PetListItemVO>> autoRecommend(Integer count) {
