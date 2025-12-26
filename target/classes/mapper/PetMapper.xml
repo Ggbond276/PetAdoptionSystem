@@ -29,34 +29,22 @@
         WHERE id = #{id}
     </delete>
     <select id="getById" resultMap="BaseResultMap">
-        SELECT p.id,
-        p.name,
-        p.cover,
-        p.detail,
-        p.address,
-        p.age,
-        p.pet_type_id,
-        p.is_vaccine,
-        p.is_recommend,
-        p.is_adopt,
-        p.create_time,
-        pt.name AS pet_type_name
+        SELECT
+            p.id,
+            p.name,
+            p.cover,
+            p.detail,
+            p.address,
+            p.age,
+            p.pet_type_id,
+            p.is_vaccine,
+            p.is_recommend,
+            p.is_adopt,
+            p.create_time,
+            pt.name AS pet_type_name
         FROM pet p
-        LEFT JOIN pet_type pt ON pt.id = p.pet_type_id
-        <where>
-            <if test="name != null and name != ''">
-                AND p.name LIKE concat('%',#{name},'%')
-            </if>
-            <if test="isRecommend != null">
-                AND p.is_recommend = #{isRecommend}
-            </if>
-            <if test="petTypeId != null">
-                AND p.pet_type_id = #{petTypeId}
-            </if>
-        </where>
-        <if test="current != null and size != null">
-            LIMIT #{current},#{size}
-        </if>
+                 LEFT JOIN pet_type pt ON pt.id = p.pet_type_id
+        WHERE p.id = #{id}
     </select>
     <select id="queryListItem" resultMap="BaseResultItemMap">
         SELECT p.id,
