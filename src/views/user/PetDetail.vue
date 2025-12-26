@@ -90,21 +90,191 @@
         contentType="PET"
       />
     </div>
+
+    <el-drawer
+      size="40%"
+      title="申请领养宠物"
+      :visible.sync="drawer"
+      :direction="direction"
+      :before-close="handleClose"
+    >
+      <div style="margin: 10px 20px;">
+        <div style="margin-bottom: 20px;">
+          <div v-if="active === 0">
+            <div
+              style="font-size: 14px;color: rgb(229, 62, 48);background-color: rgb(248,248,248);width: 100%;padding: 10px 20px;box-sizing: border-box;"
+            >
+              步骤一：先确保期待领养的宠物信息是否正确
+            </div>
+          </div>
+          <div v-else-if="active === 1">
+            <div
+              style="font-size: 14px;color: rgb(229, 62, 48);background-color: rgb(248,248,248);width: 100%;padding: 10px 20px;box-sizing: border-box;"
+            >
+              步骤二：请如实填写领养证明材料，包括但不限于自己的基本家庭情况、教育经历、与宠物的故事等
+            </div>
+          </div>
+          <div v-else>
+            <div
+              style="font-size: 14px;color: rgb(229, 62, 48);background-color: rgb(248,248,248);width: 100%;padding: 10px 20px;box-sizing: border-box;"
+            >
+              步骤三：请选择一个收货地址，收货地址可在「首页 -
+              收货地址」处进行维护
+            </div>
+          </div>
+        </div>
+        <el-steps :active="active" finish-status="success">
+          <el-step title="确认宠物基本信息"></el-step>
+          <el-step title="填写证明材料"></el-step>
+          <el-step title="确定收货地址"></el-step>
+        </el-steps>
+        <div style="margin-block: 20px;">
+          <div v-if="active === 0">
+            <el-descriptions
+              class="margin-top"
+              title=""
+              :column="2"
+              :size="size"
+              border
+            >
+              <el-descriptions-item>
+                <template slot="label">
+                  宠物图片
+                </template>
+                <img
+                  :src="petInfo.cover"
+                  style="height: 70px;width: 100px;"
+                  alt="宠物图片"
+                />
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  宠物名
+                </template>
+                {{ petInfo.name }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-location-outline"></i>
+                  当前所在地址
+                </template>
+                {{ petInfo.address }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-tickets"></i>
+                  性别
+                </template>
+                <el-tag size="small">{{
+                  petInfo.gender === 1 ? "公" : "母"
+                }}</el-tag>
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-tickets"></i>
+                  宠物类目
+                </template>
+                <el-tag type="success" size="small">{{
+                  petInfo.petTypeName
+                }}</el-tag>
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-tickets"></i>
+                  疫苗状态
+                </template>
+                <el-tag type="success" size="small">{{
+                  petInfo.isVaccine ? "已接种疫苗" : "未接种疫苗"
+                }}</el-tag>
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-tickets"></i>
+                  年龄
+                </template>
+                {{ petInfo.age }}个月
+              </el-descriptions-item>
+            </el-descriptions>
+          </div>
+          <div v-else-if="active === 1">
+            <Editor
+              api="api/v1.0/pet-adopt-api/file/upload"
+              height="200px"
+              :receiveContent="receiveContent"
+              @on-listener="onListener"
+            />
+          </div>
+          <div v-else>
+            <div
+              :style="{
+                color:
+                  selectedAddress.id === address.id ? 'rgb(0, 0, 255)' : '',
+                border:
+                  selectedAddress.id === address.id
+                    ? '1px solid rgb(0, 0, 255)'
+                    : ''
+              }"
+              @click="addressClick(address)"
+              class="address-item"
+              v-for="(address, index) in addressList"
+              :key="index"
+            >
+              {{ address.addressee }} - {{ address.concatPhone }} -
+              {{ address.detail }}
+            </div>
+          </div>
+        </div>
+        <div>
+          <el-button
+            icon="el-icon-back"
+            v-if="active !== 0"
+            type="primary"
+            style="margin-top: 12px;"
+            @click="last"
+            >上一步</el-button
+          >
+          <el-button
+            icon="el-icon-right"
+            v-if="active !== 2"
+            type="primary"
+            style="margin-top: 12px;"
+            @click="next"
+            >下一步</el-button
+          >
+          <el-button
+            icon="el-icon-success"
+            v-if="active === 2"
+            type="primary"
+            style="margin-top: 12px;"
+            @click="postPetAdoptOrder"
+            >确认提交</el-button
+          >
+        </div>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
 <script>
 import Evaluations from "@/components/Evaluations.vue";
+import Editor from "@/components/Editor.vue";
 import { getUserInfo } from "@/utils/storage";
 export default {
-  components: { Evaluations },
+  components: { Evaluations, Editor },
   data() {
     return {
       petInfo: {},
+      active: 0,
+      drawer: false,
+      size: "",
+      direction: "rtl",
       queryDto: {},
       userInfo: {},
       saveActiveNetId: null,
       upvoteActiveNetId: null,
+      addressList: [],
+      selectedAddress: {},
+      receiveContent: "", // 证明材料
       saveStatus: false, // 收藏状态，初始值false，表示未收藏
       upvoteStatus: false // 点赞状态，初始值false，表示未点赞
     };
@@ -123,6 +293,78 @@ export default {
     this.fetchUpvoteStatus();
   },
   methods: {
+    async postPetAdoptOrder() {
+      try {
+        if (this.receiveContent === "<p><br></p>") {
+          this.$notify({
+            title: "宠物领养",
+            type: "info",
+            message: "请补充证明材料",
+            position: "buttom-right",
+            duration: 1000
+          });
+          return;
+        }
+        const petAdoptOrder = {
+          detail: this.receiveContent,
+          addressId: this.selectedAddress.id,
+          petId: this.petInfo.id
+        };
+        const { message } = await this.$axios.post(
+          "/pet-adopt-order/save",
+          petAdoptOrder
+        );
+        this.$notify({
+          title: "宠物领养",
+          type: "success",
+          message: message,
+          position: "buttom-right",
+          duration: 1000
+        });
+        this.drawer = false;
+        this.receiveContent = "";
+        this.selectedAddress = {};
+      } catch (error) {
+        console.log("领养宠物信息异常", error);
+        this.$notify({
+          title: "宠物领养",
+          type: "info",
+          message: error.message,
+          position: "buttom-right",
+          duration: 1000
+        });
+      }
+    },
+    addressClick(address) {
+      this.selectedAddress = address;
+    },
+    onListener(text) {
+      this.receiveContent = text;
+    },
+    last() {
+      if (this.active-- <= 0) this.active = 2;
+    },
+    next() {
+      if (this.active++ > 2) this.active = 0;
+    },
+    handleClose() {
+      this.drawer = false;
+    },
+    // 查询用户自己的收货地址
+    async fetchAddress() {
+      try {
+        const { data } = await this.$axios.post("/address/queryUser", {});
+        this.addressList = data;
+        const defaultAddressList = this.addressList.filter(
+          entity => entity.isDefault
+        );
+        if (defaultAddressList.length !== 0) {
+          this.selectedAddress = defaultAddressList[0];
+        }
+      } catch (error) {
+        console.log("查询用户自己的收货地址信息异常：", error);
+      }
+    },
     // 查询用户与宠物信息的点赞关系
     async fetchUpvoteStatus() {
       try {
@@ -271,24 +513,28 @@ export default {
       }
     },
     handleAdopt() {
-      this.$confirm(`确定要申请领养${this.petInfo.name}吗?`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          // 这里调用领养API
-          this.$message.success("领养申请已提交，请等待审核!");
-        })
-        .catch(() => {
-          this.$message.info("已取消领养申请");
-        });
+      this.drawer = true;
+      this.fetchAddress();
     }
   }
 };
 </script>
 
 <style land="scss" scoped>
+.address-item {
+  background-color: rgb(248, 248, 248);
+  padding: 10px 20px;
+  box-sizing: border-box;
+  margin-bottom: 1px;
+  font-size: 14px;
+  cursor: pointer;
+  border: 1px solid rgb(248, 248, 248);
+
+  &:hover {
+    background-color: rgb(240, 240, 240);
+  }
+}
+
 .operation-area {
   display: flex;
   justify-content: center;

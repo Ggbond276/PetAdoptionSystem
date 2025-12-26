@@ -44,11 +44,13 @@
         ></el-table-column>
         <el-table-column prop="isDefault" width="130" label="是否是默认地址">
           <template #default="scope">
-            <el-tag
-              :type="scope.row.isDefault ? 'primary' : 'info'"
-              size="mini"
-              >{{ scope.row.isDefault ? "默认地址" : "非默认" }}</el-tag
+            <el-switch
+              @change="changeSwitch(scope.row)"
+              v-model="scope.row.isDefault"
+              active-color="#13ce66"
+              inactive-color="#f1f1f1"
             >
+            </el-switch>
           </template>
         </el-table-column>
         <el-table-column label="" width="150" align="center">
@@ -193,6 +195,10 @@ export default {
     this.fetchFreshData(); // 页面创建时，先去加载收货地址数据
   },
   methods: {
+    changeSwitch(data) {
+      this.apiParam = { ...data };
+      this.updateMyAddress();
+    },
     beforeClose() {
       this.cancelOperation();
     },

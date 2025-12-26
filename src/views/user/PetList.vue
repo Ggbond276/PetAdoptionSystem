@@ -2,6 +2,11 @@
   <div>
     <div class="recommend">
       <!-- 推荐区域 -->
+      <Carousel
+        @obj-detail="objDetail"
+        containerHeight="80vh"
+        :carouselItems="carouselItems"
+      />
     </div>
     <div class="pet">
       <div class="pet-type">
@@ -32,10 +37,7 @@
             @click="viewPetDetail(pet.id)"
           >
             <div class="pet-cover">
-              <img
-                :src="require('@/assets/image/pet-cover.jpg')"
-                :alt="pet.name"
-              />
+              <img :src="pet.cover" :alt="pet.name" />
               <div v-if="pet.isAdopt" class="adopted-tag">已领养</div>
               <div v-if="pet.isRecommend" class="recommend-tag">推荐</div>
             </div>
@@ -62,20 +64,43 @@
 </template>
 
 <script>
+import Carousel from "@/components/Carousel.vue";
 export default {
+  components: { Carousel },
   name: "Home",
   data() {
     return {
       petTypeList: [],
       petTypeId: null,
       petQueryDto: {},
-      petList: []
+      petList: [],
+      recommendPetList: [],
+      carouselItems: []
     };
   },
   created() {
     this.fetchPetType();
+    this.fetchAutoRecommend();
   },
   methods: {
+    objDetail(obj) {
+      this.viewPetDetail(obj.id);
+    },
+    async fetchAutoRecommend() {
+      try {
+        const { data } = await this.$axios.get(`/pet/autoRecommend/${4}`);
+        this.carouselItems = data.map(entity => {
+          return {
+            id: entity.id,
+            image: entity.cover,
+            title: entity.name,
+            subtitle: entity.address
+          };
+        });
+      } catch (error) {
+        console.log("查询推荐宠物信息异常：", error);
+      }
+    },
     petTypeClick(petType) {
       this.petTypeId = petType.id;
       this.petQueryDto.petTypeId = petType.id;
@@ -102,10 +127,7 @@ export default {
       }
     },
     viewPetDetail(id) {
-      this.$router.push({
-        path: "/pet-detail",
-        query: { id }
-      });
+      window.open(`pet-detail?id=${id}`, "_blank");
     }
   }
 };
@@ -114,8 +136,7 @@ export default {
 <style scoped lang="scss">
 .recommend {
   width: 100%;
-  height: 300px;
-  background-color: rgba(26, 147, 62, 0.1);
+  // background-color: rgba(26, 147, 62, 0.1);
   margin-bottom: 30px;
 }
 

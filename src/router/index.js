@@ -24,6 +24,16 @@ const routes = [
     component: () => import(`@/views/user/PetDetail.vue`)
   },
   {
+    path: "/pet-detail-admin",
+    name: "petDetail",
+    component: () => import(`@/views/admin/ViewPetDetailAdmin.vue`)
+  },
+  {
+    path: "/view-pet-detail",
+    name: "viewPetDetail",
+    component: () => import(`@/views/user/ViewPetDetail.vue`)
+  },
+  {
     path: "/pet-post-detail",
     name: "petPostDetail",
     component: () => import(`@/views/user/PetPostDetail.vue`)
@@ -85,6 +95,14 @@ const routes = [
         show: true,
         icon: "el-icon-s-help",
         component: () => import(`@/views/admin/PetManage.vue`),
+        meta: { requireAuth: true }
+      },
+      {
+        path: "/pet-adopt-order-manage",
+        name: "宠物领养订单管理",
+        show: true,
+        icon: "el-icon-document",
+        component: () => import(`@/views/admin/PetAdoptOrderManage.vue`),
         meta: { requireAuth: true }
       },
       {
@@ -158,6 +176,12 @@ const routes = [
         path: "/address",
         name: "收货地址",
         component: () => import(`@/views/user/Address.vue`),
+        meta: { requireAuth: true }
+      },
+      {
+        path: "/my-pet-adopt-order",
+        name: "宠物领养订单",
+        component: () => import(`@/views/user/MyPetAdoptOrder.vue`),
         meta: { requireAuth: true }
       },
       {

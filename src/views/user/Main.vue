@@ -281,7 +281,12 @@ export default {
       dialogOutOperation: false, // 退出登录弹窗控制开关
       navItems: [
         { path: "/pet-list", icon: "", title: "宠物大厅" },
-        { path: "/pet-post", icon: "el-icon-s-help", title: "养宠经验" }
+        { path: "/pet-post", icon: "el-icon-s-help", title: "养宠经验" },
+        {
+          path: "/my-pet-adopt-order",
+          icon: "el-icon-tickets",
+          title: "宠物领养订单"
+        }
       ],
       userInfo: {},
       isAuthChecked: false,

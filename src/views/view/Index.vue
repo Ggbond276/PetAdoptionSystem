@@ -3,43 +3,38 @@
     <div class="top">
       <div class="logo">
         <Logo sysName="宠物领养系统" textColor="rgb(255,255,255)" />
-        <div class="nav-operation" @click="goLogin">
-          登录 / 注册
+        <div @click="goLogin" class="nav-operation">
+          登录/注册
         </div>
       </div>
-
       <Carousel
+        @obj-detail="objDetail"
         containerHeight="100vh"
         :carouselItems="carouselItems"
-        @obj-detail="objDetail"
       />
     </div>
-
     <div class="pet-info">
       <div class="info">
         <h1>宠物信息</h1>
-
         <div class="pet">
           <div
+            @click="petInfo(pet)"
             class="pet-item"
             v-for="pet in petList"
             :key="pet.id"
-            @click="petInfo(pet)"
           >
             <div class="cover">
-              <img :src="pet.cover" alt="" />
+              <img :src="pet.cover" alt="" srcset="" />
             </div>
-            <div class="name">
-              {{ pet.name }}
-            </div>
+            <div class="name">{{ pet.name }}</div>
           </div>
         </div>
       </div>
     </div>
-
     <div class="bottom">
       <div>
-        &copy; 2025 GGCoder
+        &copy; 2025年度《手把手带敲系列》之宠物领养系统 -
+        B站「程序员辰星」原创出品
       </div>
     </div>
   </div>
@@ -49,35 +44,28 @@
 import Carousel from "@/components/Carousel.vue";
 import Logo from "@/components/Logo.vue";
 import { getToken } from "@/utils/storage.js";
-
 export default {
-  components: {
-    Carousel,
-    Logo
-  },
-
+  components: { Carousel, Logo },
   data() {
     return {
       carouselItems: [], // 轮播图数据
-      petTypeList: [], // 宠物类别数据
+      petTypeList: [], //宠物类别数据
       petTypeId: null,
       petList: []
     };
   },
-
   created() {
     this.fetchRecommendPetInfo();
     this.fetchPetInfo();
     this.auth();
   },
-
   methods: {
     async auth() {
       const token = getToken();
       if (token === null) {
+        // 没有登录不做处理
         return;
       }
-
       try {
         await this.$axios.get("/user/auth");
         this.$router.push("/user");
@@ -85,34 +73,26 @@ export default {
         // 认证不通过
       }
     },
-
     petInfo(pet) {
-      console.log("查看宠物信息：", pet);
+      window.open(`view-pet-detail?id=${pet.id}`, "_blank");
     },
-
     objDetail(obj) {
-      console.log(JSON.stringify(obj));
+      window.open(`view-pet-detail?id=${obj.id}`, "_blank");
     },
-
     goLogin() {
-      this.$router.push("/login");
+      window.open("/login", "_blank");
     },
-
     // 查询宠物信息
     async fetchPetInfo() {
       try {
-        const petQueryDto = {
-          current: 1,
-          size: 6
-        };
+        const petQueryDto = { current: 1, size: 6 };
         const response = await this.$axios.post("/pet/list", petQueryDto);
         this.petList = response.data;
       } catch (error) {
         console.log("首页查询宠物信息：", error);
       }
     },
-
-    // 查询推荐的宠物信息
+    // 查询推荐的宠物推荐信息
     async fetchRecommendPetInfo() {
       try {
         const response = await this.$axios.get("/pet/recommend");
@@ -144,6 +124,10 @@ export default {
     cursor: pointer;
     padding: 10px;
     box-sizing: border-box;
+
+    // &:hover {
+    //     box-sizing: 2px 4px 8px rgb(79, 51, 51);
+    // }
 
     .cover {
       img {
