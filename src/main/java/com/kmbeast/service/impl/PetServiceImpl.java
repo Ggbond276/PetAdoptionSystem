@@ -14,13 +14,18 @@ import com.kmbeast.pojo.entity.ActiveNet;
 import com.kmbeast.pojo.entity.Pet;
 import com.kmbeast.pojo.vo.PetListItemVO;
 import com.kmbeast.pojo.vo.PetVO;
+import com.kmbeast.pojo.vo.ScoreVO;
 import com.kmbeast.service.PetService;
 import com.kmbeast.utils.AssertUtils;
+import com.kmbeast.utils.UserBasedCFUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 宠物信息业务逻辑实现类
@@ -50,6 +55,7 @@ public class PetServiceImpl implements PetService {
 
     /**
      * 宠物信息校验
+     *
      * @param pet 宠物信息
      */
     private void petParamCheck(Pet pet) {
@@ -131,7 +137,8 @@ public class PetServiceImpl implements PetService {
 
     /**
      * 查询手动推荐的宠物数据，类似于banner效果
-     * @return Result<List<PetListItemVO>>
+     *
+     * @return Result<List < PetListItemVO>>
      */
     @Override
     public Result<List<PetListItemVO>> recommend() {
@@ -147,5 +154,47 @@ public class PetServiceImpl implements PetService {
         defaultPetQueryDto.setSize(3);
         List<PetListItemVO> defaultPetListItemVOS = petMapper.queryListItem(defaultPetQueryDto);
         return ApiResult.success(defaultPetListItemVOS);
+    }
+
+    /**
+     * 智能推荐宠物信息
+     *
+     * @param count 期望拿到的条数
+     * @return Result<List < PetListItemVO>> 通用返回封装类
+     */
+    @Override
+    public Result<List<PetListItemVO>> autoRecommend(Integer count) {
+        List<Integer> petIds = petMapper.queryAllIds(); // 获取全部的宠物ID列表
+        // 兴趣评分 = 浏览 * 1 + 收藏 * 3 + 喜欢 * 1
+        List<ScoreVO> scoreVOS = activeNetMapper.queryScore("PET");
+        // 期望用到的评分数据集
+        List<UserBasedCFUtil.Score> scoreList = scoreVOS.stream().map(scoreVO -> new UserBasedCFUtil.Score(
+                scoreVO.getUserId(),
+                scoreVO.getContentId(),
+                scoreVO.getScore()
+        )).collect(Collectors.toList());
+        // 构建用户对于物品评分的矩阵
+        Map<Integer, Map<Integer, Double>> userItemMatrix = UserBasedCFUtil.buildUserItemMatrix(petIds, scoreList);
+        UserBasedCFUtil userBasedCFUtil = new UserBasedCFUtil(userItemMatrix);
+        List<Integer> recommendItems = userBasedCFUtil.recommendItems(LocalThreadHolder.getUserId(), count);
+        System.out.println("为用户「" + LocalThreadHolder.getUserId() + "」推荐的宠物ID列表: " + recommendItems);
+        // “冷启动”
+        if (recommendItems.isEmpty()) {
+            List<ScoreVO> scoreVOList = activeNetMapper.queryAllIds(
+                    "PET",
+                    ActiveNetType.VIEW.getStatus(),
+                    count
+            );
+            if (scoreVOList.isEmpty()) {
+                return ApiResult.success(new ArrayList<>());
+            }
+            List<Integer> petNetIds = scoreVOList.stream()
+                    .map(ScoreVO::getContentId)
+                    .collect(Collectors.toList());
+            List<PetListItemVO> petListItemVOS = petMapper.queryListItemByIds(petNetIds);
+            return ApiResult.success(petListItemVOS);
+        }
+        List<PetListItemVO> petListItemVOS = petMapper.queryListItemByIds(recommendItems);
+        return ApiResult.success(petListItemVOS);
     }
 }

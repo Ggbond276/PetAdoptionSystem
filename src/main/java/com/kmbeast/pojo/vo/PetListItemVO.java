@@ -27,6 +27,10 @@ public class PetListItemVO {
      * 宠物年龄
      */
     private Integer age;
+     /**
+     * 宠物性别(0:未知; 1:雄性; 2:雌性)
+     */
+    private Integer gender;
     /**
      * 宠物类别ID
      */

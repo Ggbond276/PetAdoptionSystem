@@ -36,6 +36,10 @@ public class Pet {
      */
     private Integer age;
     /**
+     * 宠物性别(0:未知; 1:雄性; 2:雌性)
+     */
+    private Integer gender;
+    /**
      * 宠物类型ID, 外键, 关联宠物类型表, 标识宠物的类型
      */
     private Integer petTypeId;
