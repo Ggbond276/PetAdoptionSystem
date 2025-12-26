@@ -47,6 +47,7 @@ const routes = [
     path: "/register",
     component: () => import(`@/views/register/Register.vue`)
   },
+  // 管理员
   {
     path: "/admin",
     component: () => import(`@/views/admin/Home.vue`),
@@ -71,14 +72,6 @@ const routes = [
         meta: { requireAuth: true }
       },
       {
-        path: "/pet-manage",
-        name: "宠物管理",
-        show: true,
-        icon: "el-icon-s-help",
-        component: () => import(`@/views/admin/PetManage.vue`),
-        meta: { requireAuth: true }
-      },
-      {
         path: "/pet-type-manage",
         name: "宠物类别管理",
         show: true,
@@ -87,11 +80,19 @@ const routes = [
         meta: { requireAuth: true }
       },
       {
-        path: "/notice-manage",
-        name: "公告管理",
+        path: "/pet-manage",
+        name: "宠物管理",
         show: true,
-        icon: "el-icon-document",
-        component: () => import(`@/views/admin/NoticeManage.vue`),
+        icon: "el-icon-s-help",
+        component: () => import(`@/views/admin/PetManage.vue`),
+        meta: { requireAuth: true }
+      },
+      {
+        path: "/pet-post-manage",
+        name: "宠物经验帖子管理",
+        show: true,
+        icon: "el-icon-s-help",
+        component: () => import(`@/views/admin/PetPostManage.vue`),
         meta: { requireAuth: true }
       },
       {
@@ -103,22 +104,31 @@ const routes = [
         meta: { requireAuth: true }
       },
       {
+        path: "/proposal-feedback-manage",
+        name: "意见与反馈管理",
+        show: true,
+        icon: "el-icon-c-scale-to-original",
+        component: () => import(`@/views/admin/ProposalFeedbackManage.vue`),
+        meta: { requireAuth: true }
+      },
+      {
+        path: "/notice-manage",
+        name: "公告管理",
+        show: true,
+        icon: "el-icon-document",
+        component: () => import(`@/views/admin/NoticeManage.vue`),
+        meta: { requireAuth: true }
+      },
+      {
         path: "/update-password",
         name: "修改个人密码",
         show: false, // 不在导航栏里面显示
         component: () => import(`@/views/admin/UpdatePassword.vue`),
         meta: { requireAuth: true }
-      },
-      {
-        path: "/pet-post-manage",
-        name: "宠物经验帖子管理",
-        show: true,
-        icon: "el-icon-s-help",
-        component: () => import(`@/views/admin/PetPostManage.vue`),
-        meta: { requireAuth: true }
       }
     ]
   },
+  // 用户
   {
     path: "/user",
     component: () => import(`@/views/user/Main.vue`),
@@ -142,6 +152,18 @@ const routes = [
         path: "/pet-post-user",
         name: "创作中心",
         component: () => import(`@/views/user/PetPostUser.vue`),
+        meta: { requireAuth: true }
+      },
+      {
+        path: "/address",
+        name: "收货地址",
+        component: () => import(`@/views/user/Address.vue`),
+        meta: { requireAuth: true }
+      },
+      {
+        path: "/proposal-feedback",
+        name: "意见与反馈",
+        component: () => import(`@/views/user/ProposalFeedback.vue`),
         meta: { requireAuth: true }
       }
     ]

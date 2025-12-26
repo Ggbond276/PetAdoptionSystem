@@ -48,6 +48,9 @@
               <el-dropdown-item @click.native="center" icon="el-icon-s-data">
                 创作中心
               </el-dropdown-item>
+              <el-dropdown-item @click.native="address" icon="el-icon-s-ticket">
+                收货地址
+              </el-dropdown-item>
               <el-dropdown-item
                 @click.native="updateUserInfo"
                 icon="el-icon-user-solid"
@@ -278,8 +281,7 @@ export default {
       dialogOutOperation: false, // 退出登录弹窗控制开关
       navItems: [
         { path: "/pet-list", icon: "", title: "宠物大厅" },
-        { path: "/pet-post", icon: "el-icon-s-help", title: "养宠经验" },
-        { path: "/pet-post-user", icon: "", title: "创作中心" }
+        { path: "/pet-post", icon: "el-icon-s-help", title: "养宠经验" }
       ],
       userInfo: {},
       isAuthChecked: false,
@@ -303,9 +305,13 @@ export default {
       // 加载创作中心页面
       this.$router.push("/pet-post-user");
     },
+    address() {
+      // 加载收货地址页面
+      this.$router.push("/address");
+    },
     // 跳转至宠物经验帖子发布页
     goPetPost() {
-      this.$router.push("/create-pet-post");
+      window.open("/create-pet-post", "_blank");
     },
     // 性别选择切换
     handleGenderChange(obj) {
